@@ -19,9 +19,6 @@ class PostPagePagination(PageNumberPagination):
 
 
 class NewsViewSet(viewsets.ModelViewSet):
-    """
-    API for creation, geting, updating and deleting of tweets
-    """
     queryset = News.objects.all()
     serializer_class = NewsSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorPermission]
@@ -37,6 +34,44 @@ class NewsViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, serializer):
         serializer.save(author=self.request.user.author)
+
+    @action(methods=['GET', ], detail=True, permission_classes=[IsAuthorPermission])
+    def slug(self, request, pk=None):
+        serializer = NewsStatusSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(
+                author=request.user.author,
+                news=self.get_object()
+            )
+            return Response(f'{serializer.data}, Status added') #status=status.HTTP_201_CREATED)
+        else:
+            return Response(f"{serializer.data}, You already status")#status=status.HTTP_400_BAD_REQUEST)
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentStatusSerializer
+    permission_classes = [IsAuthorPermission]
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user.author)
+
+    def perform_update(self, serializer):
+        serializer.save(author=self.request.user.author)
+
+    def perform_destroy(self, serializer):
+        serializer.save(author=self.request.user.author)
+
+    @action(methods=['GET', ], detail=True, permission_classes=[IsAuthorPermission])
+    def slug(self, request, pk=None):
+        serializer = CommentStatusSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(
+                author=request.user.author,
+                news=self.get_object()
+            )
+            return Response(f'{serializer.data}, Status added')  # status=status.HTTP_201_CREATED)
+        else:
+            return Response(f"{serializer.data}, You already status")  # status=status.HTTP_400_BAD_REQUEST)
+
 
 class CommentListCreateAPIView(generics.ListCreateAPIView):
     queryset = Comment.objects.all()
@@ -76,3 +111,4 @@ class StatusesRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
     queryset = Status.objects.all()
     serializer_class = SatusSerializer
     permission_classes = [IsStaffPermission]
+

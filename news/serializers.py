@@ -25,7 +25,7 @@ class NewsStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = NewsStatus
         fields = '__all__'
-        read_only_fields = ['author', 'status', 'news']
+        #read_only_fields = ['author', 'status', 'news']
 
 class CommentStatusSerializer(serializers.ModelSerializer):
     class Meta:

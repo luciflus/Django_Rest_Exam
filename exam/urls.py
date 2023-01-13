@@ -57,6 +57,9 @@ urlpatterns = [
     path('api/news/<int:news_id>/comments/', news_view.CommentListCreateAPIView.as_view()),
     path('api/news/<int:news_id>/comments/<int:pk>/', news_view.CommentRetrieveUpdateDestroyAPIView.as_view()),
 
+    path('api/news/<int:news_id>/slug/', news_view.CommentListCreateAPIView.as_view()),
+    path('api/news/<int:news_id>/comments/<int:comment_id>/slug/', news_view.CommentViewSet.as_view({'get'})),
+
     path('api/statuses/', news_view.StatusesListCreateAPIView.as_view()),
     path('api/statuses/<int:pk>/', news_view.StatusesRetrieveUpdateDestroyAPIView.as_view()),
 
